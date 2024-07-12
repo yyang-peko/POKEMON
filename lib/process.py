@@ -45,7 +45,7 @@ def parser_vep(vep_input):
 	csq_df[csq_header] = temp_df[csq_header]
 	csq_df_filter = csq_df[ (csq_df['Consequence']=='missense_variant') & \
 				(csq_df['CANONICAL']=='YES')]
-	pdbentry = csq_df_filter['SWISSPROT'].str.split('_',1, expand=True)
+	pdbentry = csq_df_filter['SWISSPROT'].str.split('_', n=1, expand=True)
 	csq_df_filter.loc[:,'SWISSPROT'] = pdbentry[0]
 	csq_df_filter.loc[:,'ID']=csq_df_filter[['#CHROM','POS','REF','ALT']].astype(str).agg(':'.join,axis=1)
 
@@ -216,11 +216,11 @@ def parser_vcf(genotype_file,phenotype_file,cov_file,cov_list,freq):
 	if phenotype.shape[1] < 2: phenotype = phenotype.transpose()
 	phenotype_ind = phenotype.columns.tolist()
 	genotype_ind = genotype.index.tolist()
-	individual = set(genotype_ind).intersection(phenotype_ind)
+	individual = list(set(genotype_ind).intersection(phenotype_ind))
 
 	if cov_file:	
 		cov_ind = cov.index.tolist()
-		individual = set(individual).intersection(cov_ind)
+		individual = list(set(individual).intersection(cov_ind))
 		cov = cov.loc[individual]
 	## calculate freq
 	freqs = genotype.sum(axis=0,skipna=True) 
